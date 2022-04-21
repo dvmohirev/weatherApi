@@ -21,19 +21,6 @@ import java.util.List;
 
 @RestController
 public class MainRestController {
-    //добавил переменные Широта и долгота для передачи в метод goParse в парсеры
-    //не забыть, что для каждого парсера нужно обработать URL по-своему
-    private final long currentTime = new GregorianCalendar().getTimeInMillis();
-    private final String latitude = "55.159897"; // Челябинск - Широта
-    private final String longitude = "61.402554";// Челябинск - Долгота
-    @Autowired
-    ParseFromYandex parseFromYandex;
-
-    @Autowired
-    ParseFromOpenWeather parseFromOpenWeather;
-
-    @Autowired
-    ParseFromWeatherbit parseFromWeatherbit;
 
     @Autowired
     WeatherService weatherService;
@@ -54,8 +41,6 @@ public class MainRestController {
                 throw new RuntimeException("Введена не корректная дата");
             }
         }
-        //нужно где-то поставить парсинг погоды по сервисам
-        Weather weatherDB = parseWeather();
 
         if (timestamp == null){
             Weather weatherNow = weatherService.findFirstWeatherByCityOrderByDateDesc(city);
@@ -66,30 +51,5 @@ public class MainRestController {
             List<Weather> weatherChoose = weatherService.getWeatherByCityAndDate(city, timestamp);
             return weatherChoose;
         }
-    }
-
-    public Weather parseWeather() throws JsonProcessingException {
-        Weather weatherYandex = null;
-        Weather weatherOpenW = null;
-        Weather weatherWeatherbit = null;
-        Weather joinWeather = null;
-        //для Яндекс
-        weatherYandex = parseFromYandex.goParse(latitude, longitude);
-        //для OpenW
-        weatherOpenW = parseFromOpenWeather.goParse(latitude, longitude);
-        //для Weatherbit
-        weatherWeatherbit = parseFromWeatherbit.goParse(latitude, longitude);
-        joinWeather = new Weather(
-                weatherYandex.getCity(),
-                weatherYandex.getDate(),
-                (weatherYandex.getTemperature() +
-                        weatherOpenW.getTemperature() +
-                        weatherWeatherbit.getTemperature())/3,
-                weatherYandex.getWeatherServiceName() +
-                        "&" + weatherOpenW.getWeatherServiceName() +
-                        "&" + weatherWeatherbit.getWeatherServiceName()
-        );
-        weatherService.saveWeather(joinWeather);
-        return joinWeather;
     }
 }

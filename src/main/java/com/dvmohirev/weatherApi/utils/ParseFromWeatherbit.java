@@ -17,16 +17,13 @@ import java.sql.Timestamp;
 public class ParseFromWeatherbit {
     private final String weatherServiceName = "Weatherbit";
     private RestTemplate restTemplate = new RestTemplate();
-    //private final String URL = "https://api.weatherbit.io/v2.0/current?lat=51.50628&lon=0.13025&key=fe2446c083fc4cfc8c487f6a8b267ced";
-
 
     public ParseFromWeatherbit(){
 
     }
-    public Weather goParse(String latitude, String longitude) throws JsonProcessingException {
-        String URL = "https://api.weatherbit.io/v2.0/current?lat=" +
-                latitude + "&lon=" + longitude +
-                "&key=fe2446c083fc4cfc8c487f6a8b267ced";
+    public Weather goParse(String country, String city) throws JsonProcessingException {
+        String URL = "https://api.weatherbit.io/v2.0/current?city=" +
+                city + "&key=fe2446c083fc4cfc8c487f6a8b267ced";
         HttpHeaders headers = new HttpHeaders();
 
         ResponseEntity<WeatherBitDto> responseEntity = null;
@@ -34,11 +31,11 @@ public class ParseFromWeatherbit {
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValueAsString(responseEntity.getBody());
-        System.out.println(weatherServiceName + ": " + responseEntity.getBody());
-        String city = responseEntity.getBody().getData().get(0).getCityName();
+        System.out.println(weatherServiceName + " URL: " + URL);
+        String cityName = responseEntity.getBody().getData().get(0).getCityName();
         Integer time = responseEntity.getBody().getData().get(0).getTs().intValue();
         Integer temperature = responseEntity.getBody().getData().get(0).getTemp();
 
-        return new Weather(city, new Timestamp(time * 1000L), temperature, weatherServiceName);
+        return new Weather(cityName, new Timestamp(time * 1000L), temperature, weatherServiceName);
     }
 }
