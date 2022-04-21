@@ -21,7 +21,7 @@ public class WeatherScheduler {
     //private String[] countryCitySettings;
     private List<String> countryCitySettings;
 
-    @Scheduled(fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedDelay = 20, timeUnit = TimeUnit.SECONDS)
     public void testScheduling() throws JsonProcessingException {
         if(countryCitySettings.size() % 2 != 0) {
             System.out.println("Введите четное значение стран");

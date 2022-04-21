@@ -31,7 +31,7 @@ public class MainRestController {
             @RequestParam(value="date", required = false) String date) throws JsonProcessingException {
 
         Timestamp timestamp = null;
-        if (!date.isEmpty()){
+        if (date != null && !date.isEmpty()){
             try {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 Date parsedDate = dateFormat.parse(date);

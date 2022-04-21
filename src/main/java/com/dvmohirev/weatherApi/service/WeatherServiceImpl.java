@@ -16,8 +16,6 @@ import java.util.List;
 @Service
 public class WeatherServiceImpl implements WeatherService{
 
-    private final String latitude = "55.159897"; // Челябинск - Широта
-    private final String longitude = "61.402554";// Челябинск - Долгота
     @Autowired
     ParseFromYandex parseFromYandex;
 
@@ -55,11 +53,8 @@ public class WeatherServiceImpl implements WeatherService{
         Weather weatherWeatherbit = null;
         Weather joinWeather = null;
         for (int i = 1; i < listCountryCity.size(); i=i+2) {
-            //для Яндекс
             weatherYandex = parseFromYandex.goParse(listCountryCity.get(i-1), listCountryCity.get(i));
-            //для OpenW
             weatherOpenW = parseFromOpenWeather.goParse(listCountryCity.get(i-1), listCountryCity.get(i));
-            //для Weatherbit
             weatherWeatherbit = parseFromWeatherbit.goParse(listCountryCity.get(i-1), listCountryCity.get(i));
             joinWeather = new Weather(
                     weatherOpenW.getCity(),
@@ -73,7 +68,6 @@ public class WeatherServiceImpl implements WeatherService{
             );
             saveWeather(joinWeather);
         }
-
         return joinWeather;
     }
 }

@@ -1,5 +1,7 @@
 package com.dvmohirev.weatherApi.utils;
 
+import com.dvmohirev.weatherApi.utils.dto.OpenWeatherDto;
+import com.dvmohirev.weatherApi.utils.dto.YandexDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.dvmohirev.weatherApi.entity.Weather;
@@ -27,21 +29,14 @@ public class ParseFromYandex {
 
     public List<String> doCityToCoordinate (String countryName, String cityNameAbsolute) throws JsonProcessingException {
         String URL = "https://api.openweathermap.org/data/2.5/weather?q=" +
-                cityNameAbsolute +
-                "&appid=4b25446d25e57adaf28a2b7816187c2e&units=metric";
+                cityNameAbsolute + "&appid=4b25446d25e57adaf28a2b7816187c2e&units=metric";
         HttpHeaders headers = new HttpHeaders();
 
-        ResponseEntity<String> responseEntity = null;
-        responseEntity = restTemplate.exchange(URL, HttpMethod.GET, new HttpEntity(headers)
-                , new ParameterizedTypeReference<String>() {
-                });
+        ResponseEntity<OpenWeatherDto> responseEntity = null;
+        responseEntity = restTemplate.exchange(URL, HttpMethod.GET, new HttpEntity(headers), OpenWeatherDto.class);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValueAsString(responseEntity.getBody());
-        Map weatherJsonObject = mapper.readValue(responseEntity.getBody(), Map.class);
-        Map coordinate = (Map) weatherJsonObject.get("coord");
-        String latitude = String.valueOf((Double) coordinate.get("lat"));
-        String longtitude = String.valueOf((Double) coordinate.get("lon"));
+        String latitude = String.valueOf(responseEntity.getBody().getOpenWeatherCoordDto().getLatitude());
+        String longtitude = String.valueOf(responseEntity.getBody().getOpenWeatherCoordDto().getLontitude());
         System.out.println(weatherServiceName + "coordinate for Yandex: " + "lon = " + longtitude + "; lat = " + latitude);
 
         List<String> listOfCoordinate = new ArrayList<>();
@@ -58,22 +53,13 @@ public class ParseFromYandex {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Yandex-API-Key", "38a476dd-d429-47d9-8bb6-b7681f0cc5b7");
 
-        ResponseEntity<String> responseEntity = null;
-        responseEntity = restTemplate.exchange(URL, HttpMethod.GET, new HttpEntity(headers)
-                , new ParameterizedTypeReference<String>() {
-                });
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValueAsString(responseEntity.getBody());
-        Map weatherJsonObject = mapper.readValue(responseEntity.getBody(), Map.class);
+        ResponseEntity<YandexDto> responseEntity = null;
+        responseEntity = restTemplate.exchange(URL, HttpMethod.GET, new HttpEntity(headers), YandexDto.class);
         System.out.println(weatherServiceName + " URL: " + URL);
 
-        Map factArray = (Map) weatherJsonObject.get("fact");
-        Integer temperature = (Integer) factArray.get("temp");
-        Integer time = (Integer) factArray.get("obs_time");
-        Map geoObject = (Map) weatherJsonObject.get("geo_object");
-        Map locality = (Map) geoObject.get("locality");
-        String cityName = (String) locality.get("name");
+        String cityName = responseEntity.getBody().getYandexGeoObjectDto().getYandexLocalityDto().getName();
+        Integer temperature = responseEntity.getBody().getYandexFactDto().getTemperature();
+        Long time = responseEntity.getBody().getYandexFactDto().getTime();
 
         return new Weather(cityName, new Timestamp(time*1000L), temperature, weatherServiceName);
     }

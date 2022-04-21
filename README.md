@@ -7,12 +7,12 @@
    (
    id           serial primary key,
    weather_city varchar,
-   weather_date timestamp with time zone,
+   weather_date date,
    weather_temp int,
    weather_service varchar
    );
 5. Запустить программу
-6. Перейти по ссылке http://localhost:8080/weather?city=Chelyabinsk
+6. Перейти по ссылке http://localhost:8080/weather?city=Moscow&date=2022-04-22
 (endpoint - это /weather)
 
 Задача:

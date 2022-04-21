@@ -33,7 +33,7 @@ public class ParseFromWeatherbit {
         mapper.writeValueAsString(responseEntity.getBody());
         System.out.println(weatherServiceName + " URL: " + URL);
         String cityName = responseEntity.getBody().getData().get(0).getCityName();
-        Integer time = responseEntity.getBody().getData().get(0).getTs().intValue();
+        Long time = responseEntity.getBody().getData().get(0).getTs();
         Integer temperature = responseEntity.getBody().getData().get(0).getTemp();
 
         return new Weather(cityName, new Timestamp(time * 1000L), temperature, weatherServiceName);
