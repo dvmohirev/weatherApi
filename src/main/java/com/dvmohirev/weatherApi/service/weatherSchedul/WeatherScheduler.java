@@ -11,6 +11,6 @@ import java.util.concurrent.TimeUnit;
 public class WeatherScheduler {
     @Scheduled(fixedDelay = 2, timeUnit = TimeUnit.SECONDS)
     public void testScheduling() {
-        System.out.println("loh");
+        //System.out.println("loh");
     }
 }
