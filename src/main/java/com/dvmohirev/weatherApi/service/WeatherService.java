@@ -4,11 +4,13 @@ package com.dvmohirev.weatherApi.service;
 import com.dvmohirev.weatherApi.entity.Weather;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public interface WeatherService {
 
-    public void saveWeather(Weather weather);
-    public Weather getWeather(Timestamp date);
-    public Weather getWeatherByCityAndDate(String city, Timestamp date);
-    public Weather getWeatherByCity(String city);
+    void saveWeather(Weather weather);
+    Weather getWeather(Timestamp date);
+    List<Weather> getWeatherByCityAndDate(String city, Timestamp date);
+    Weather findFirstWeatherByCityOrderByDateDesc(String city);
+    Weather getWeatherByCity(String city);
 }

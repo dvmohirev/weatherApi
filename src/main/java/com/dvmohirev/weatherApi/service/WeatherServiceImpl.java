@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 public class WeatherServiceImpl implements WeatherService{
@@ -25,8 +26,14 @@ public class WeatherServiceImpl implements WeatherService{
     }
 
     @Override
-    public Weather getWeatherByCityAndDate(String city, Timestamp date) {
-        Weather weather = weatherRepository.findWeatherByCityAndDate(city, date);
+    public Weather findFirstWeatherByCityOrderByDateDesc(String city) {
+        Weather weather = weatherRepository.findFirstWeatherByCityOrderByDateDesc(city);
+        return weather;
+    }
+
+    @Override
+    public List<Weather> getWeatherByCityAndDate(String city, Timestamp date) {
+        List<Weather> weather = weatherRepository.findWeatherByCityAndDate(city, date);
         return weather;
     }
 
